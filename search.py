@@ -506,8 +506,7 @@ def update_item(url=None, **kwargs):
     if not url:
         spu = Spu.query.add_ascending('updatedAt').first()
         url = spu.get('url')
-    item = AmzProduct(url)
-    return {'spu': item.spu, 'skus': item.sku_list}
+    return AmzProduct(url)
 
 
 def print_products(products):

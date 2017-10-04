@@ -31,8 +31,7 @@ def parse_new_item(**params):
 
 @engine.define
 def update_item(**params):
-    item = search.update_item()
-    return [item.spu, item.sku_list]
+    return search.update_item()
 
 
 @engine.before_save('Todo')
