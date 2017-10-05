@@ -174,6 +174,35 @@ def all():
                            current_time=datetime.utcnow())
 
 
+@app.route('/sku/<asin>')
+def sku(asin):
+    sku_obj = Sku.query\
+        .equal_to('asin', asin)\
+        .include('spu')\
+        .first()
+    sku_objs = Sku.query\
+        .equal_to('spu', sku_obj.get('spu'))\
+        .add_ascending('price')\
+        .find()
+
+    from utils import obj_to_dict
+    sku = obj_to_dict(sku_obj)
+    skus = [obj_to_dict(obj) for obj in sku_objs]
+
+    return render_template('sku.html',
+                           sku=sku,
+                           skus=skus)
+
+@app.route('/spu/<asin>')
+def spu(asin):
+    spu_obj = Spu.query. \
+        equal_to('asin', asin) \
+        .first()
+    spu = spu_obj.dump()
+    return render_template('spu.html',
+                           spu=spu)
+
+
 @app.route('/time')
 def time():
     return str(datetime.now())
