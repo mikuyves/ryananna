@@ -25,3 +25,29 @@ a {
 #myBtn:hover {
     background-color: #555; /* Add a dark-grey background on hover */
 }
+
+@media (max-width: 978px) {
+    .container {
+      padding:0;
+      margin:0;
+    }
+
+    body {
+      padding:0;
+    }
+
+    .navbar-fixed-top, .navbar-fixed-bottom, .navbar-static-top {
+      margin-left: 0;
+      margin-right: 0;
+      margin-bottom:0;
+    }
+    .no-gutters {
+      margin-right: 0;
+      margin-left: 0;
+    }
+
+    .no-gutters.col, [class*="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}

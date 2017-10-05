@@ -12,6 +12,7 @@
 
       <input type="search" class="search mb-3 form-control form-control-lg"
              placeholder="Search from {{ items|length }} products.">
+
       <div class="row" data-masonry='{ "itemSelector": ".col", "columnWidth":".col" }'>
 
         {% macro get_img_url(item) %}
@@ -19,7 +20,9 @@
         {% endmacro %}
         {% for item in items %}
 
-          <div class="col col-6 col-xs-4 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-3">
+{#          mb-num 是底部 margin#}
+          <div class="col col-6 col-sm-4 col-md-4 col-lg-3 col-xl-2 mb-0 mb-sm-1 mb-lg-2 no-gutters">
+
             <div class="card mdui-card mdui-hoverable">
               <img class="card-img-top" src="{{ get_img_url(item.spu) }}">
               <div class="card-body">
