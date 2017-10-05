@@ -12,7 +12,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from flask_moment import Moment
 from wtforms import StringField, SubmitField
-from wtforms.validators import Required
+from wtforms.validators import DataRequired
 from threading import Thread
 
 import leancloud
@@ -40,15 +40,27 @@ History = leancloud.Object.extend('History')
 
 
 class UrlForm(FlaskForm):
-    url = StringField('Enter the URL:', validators=[Required()])
+    url = StringField('Enter the URL:', validators=[DataRequired()])
     submit = SubmitField('Submit')
+
+
+class SearchForm(FlaskForm):
+    keyword = StringField('Keyword', validators=[DataRequired()])
+    submit = SubmitField('Search')
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # Pagination.
     page = request.args.get('page', 1, type=int)
-    spu_all = Spu.query.add_descending('createdAt').find()
+    keyword = request.args.get('keyword')
+    print(keyword)
+
+    query = Spu.query.add_descending('createdAt')
+    if keyword:
+        query.contains('name', keyword)
+    spu_all = query.find()
+
     pg = Pagination(spu_all, page, 20)
 
     # Get and arrange the item data to render.
@@ -61,14 +73,12 @@ def index():
         skus = [sku_obj.dump() for sku_obj in sku_objs]
         items.append({'spu': spu, 'skus': skus})
 
-    # Form to input the URL.
-    url = None
-    form = UrlForm()
+    # Search online.
+    form = SearchForm()
     if form.validate_on_submit():
-        url = form.url.data
-        parse_new(url)
-        form.url.data = ''
-        return redirect(url_for('index'))
+        input_keyword = form.keyword.data
+        form.keyword.data = ''
+        return redirect(url_for('index', keyword=input_keyword))
 
     return render_template('index.html',
                            form=form,
@@ -95,14 +105,12 @@ def latest():
         skus = [sku_obj.dump() for sku_obj in sku_objs]
         items.append({'spu': spu, 'skus': skus})
 
-    # Form to input the URL.
-    url = None
-    form = UrlForm()
+    # Search online.
+    form = SearchForm()
     if form.validate_on_submit():
-        url = form.url.data
-        parse_new(url)
-        form.url.data = ''
-        return redirect(url_for('index'))
+        input_keyword = form.keyword.data
+        form.keyword.data = ''
+        return redirect(url_for('index', keyword=input_keyword))
 
     return render_template('latest.html',
                            form=form,
@@ -128,14 +136,12 @@ def update30():
         skus = [sku_obj.dump() for sku_obj in sku_objs]
         items.append({'spu': spu, 'skus': skus})
 
-    # Form to input the URL.
-    url = None
-    form = UrlForm()
+    # Search online.
+    form = SearchForm()
     if form.validate_on_submit():
-        url = form.url.data
-        parse_new(url)
-        form.url.data = ''
-        return redirect(url_for('index'))
+        input_keyword = form.keyword.data
+        form.keyword.data = ''
+        return redirect(url_for('index', keyword=input_keyword))
 
     return render_template('update30.html',
                            form=form,
@@ -160,6 +166,21 @@ def all():
         skus = [sku_obj.dump() for sku_obj in sku_objs]
         items.append({'spu': spu, 'skus': skus})
 
+    # Search online.
+    form = SearchForm()
+    if form.validate_on_submit():
+        input_keyword = form.keyword.data
+        form.keyword.data = ''
+        return redirect(url_for('index', keyword=input_keyword))
+
+    return render_template('all.html',
+                           form=form,
+                           items=items,
+                           current_time=datetime.utcnow())
+
+
+@app.route('/commit', methods=['GET', 'POST'])
+def commit():
     # Form to input the URL.
     url = None
     form = UrlForm()
@@ -169,10 +190,8 @@ def all():
         form.url.data = ''
         return redirect(url_for('index'))
 
-    return render_template('all.html',
-                           form=form,
-                           items=items,
-                           current_time=datetime.utcnow())
+    return render_template('commit.html',
+                           form=form)
 
 
 @app.route('/sku/<asin>')

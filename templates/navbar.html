@@ -25,14 +25,19 @@
               <a class="nav-link" href="{{ url_for('all') }}">All</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('commit') }}">Commit</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="https://ryannanna.taobao.com/">Taobao</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="https://ryannanna.taobao.com">Wechat</a>
+                <a class="nav-link" href="http://ac-xuxzk6f4.clouddn.com/59e5ee5727be4eee244f.jpg">Wechat</a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0" method="POST">
-          {{ form.url(class='form-control mr-sm-2', placeholder='Enter item URL...') }}
+{#          form.hidden_tag 十分重要，否则表单失效。#}
+          {{ form.hidden_tag() }}
+          {{ form.keyword(class='form-control mr-sm-2', placeholder='Search for all...') }}
           {{ form.submit(class='btn btn-outline-success my-2 my-sm-0') }}
         </form>
 {#        <form class="form-inline my-2 my-lg-0">#}
