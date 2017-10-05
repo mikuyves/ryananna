@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block title %}所有{% endblock %}
+
+{% block page_content %}
+  {% block content %}
+{#    {% include 'navbar.html' %}#}
+
+    <div class="mt-3">
+      <ol class="breadcrumb" id="top">
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a
+            href="{{ url_for('spu', asin=spu.asin) }}">{{ spu.name }}</a>
+        </li>
+      </ol>
+
+      <div id="items">
+
+        <input type="search" class="search mb-3 form-control form-control-lg"
+               placeholder="Search size or color from {{ skus|length }} SKUs.">
+
+        <div class="row" data-masonry='{ "itemSelector": ".col", "columnWidth":".col" }'>
+          {% macro get_img_url(item) %}
+            {{  item.hd_pics[0] if item.hd_pics else item.l_pic }}
+          {% endmacro %}
+          {% for sku in skus %}
+
+            <div class="col col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-3">
+              <div class="card mdui-card mdui-hoverable">
+                <img class="card-img-top" src="{{ sku.l_pic }}">
+                <div class="card-body">
+                  <h4 class="price card-title">¥{{ sku.price }}</h4>
+                  <p class="name description card-text">
+                    {{ sku.name }}
+                  </p>
+
+                  <footer>
+                    <a href="{{ url_for('sku', asin=sku.asin) }}"
+                       class="btn btn-primary btn-sm">View</a>
+                  </footer>
+
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+
+        </div>
+      </div>
+    </div>
+
+  {% endblock %}
+{% endblock %}
+
+
+{% block footer %} {{ super() }}
+  <script>
+      var options = {
+          valueNames: ['name'],
+          listClass: 'row'
+      };
+      var list = new List('items', options);
+      list.on('updated', function () {
+          $('.row').masonry();
+      });
+
+      $('.row').imagesLoaded().progress(function () {
+          $('.row').masonry();
+      });
+  </script>
+{% endblock %}
