@@ -19,6 +19,7 @@ import leancloud
 
 from views.todos import todos_view
 from search import update_item
+from utils import obj_to_dict
 
 
 app = Flask(__name__)
@@ -185,7 +186,6 @@ def sku(asin):
         .add_ascending('price')\
         .find()
 
-    from utils import obj_to_dict
     sku = obj_to_dict(sku_obj)
     skus = [obj_to_dict(obj) for obj in sku_objs]
 
@@ -195,12 +195,20 @@ def sku(asin):
 
 @app.route('/spu/<asin>')
 def spu(asin):
-    spu_obj = Spu.query. \
-        equal_to('asin', asin) \
+    spu_obj = Spu.query \
+        .equal_to('asin', asin) \
         .first()
-    spu = spu_obj.dump()
+    sku_objs  = Sku.query\
+        .equal_to('spu', spu_obj)\
+        .add_ascending('price')\
+        .find()
+
+    spu = obj_to_dict(spu_obj)
+    skus = [obj_to_dict(obj) for obj in sku_objs]
+
     return render_template('spu.html',
-                           spu=spu)
+                           spu=spu,
+                           skus=skus)
 
 
 @app.route('/time')
