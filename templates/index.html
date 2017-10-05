@@ -32,7 +32,8 @@
 
                 {% for sku in item.skus %}
                   <p class="card-text">
-                    <a href="{{ sku.detail_page_url }}" class="">
+                    <img class="rounded" style="width: 20px; height: auto;" src="{{ sku.s_pic }}" alt="{{ sku.name }}">
+                    <a href="{{ url_for('sku', asin=sku.asin) }}" class="">
                       <span class="card-text">{{ sku.name }} : ¥{{ sku.price }}</span>
                     </a>
                     {% if sku.is_new %}
