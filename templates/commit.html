@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  <form class="form-inline my-2 my-lg-0" method="POST">
+    {#          form.hidden_tag 十分重要，否则表单失效。#}
+    {{ form.hidden_tag() }}
+    {{ form.url(class='form-control mr-sm-2', placeholder='Enter item URL...') }}
+    {{ form.submit(class='btn btn-outline-success my-2 my-sm-0') }}
+  </form>
+{% endblock %}
