@@ -1,3 +1,4 @@
+import os
 import re
 import json
 import pprint
@@ -17,10 +18,15 @@ import leancloud
 # from fake_useragent import UserAgent
 # from fake_useragent import FakeUserAgentError
 
-from secret import AMZ_ACCESS_KEY, AMZ_SECRET_KEY, AMZ_ASSOC_TAG,\
-    AMZ_ACCESS_KEY2, AMZ_SECRET_KEY2, AMZ_ASSOC_TAG2, AMZ_COOKIE,\
-    LC_APP_ID, LC_APP_KEY, LC_USERNAME, LC_PASSWORD
-
+# 在云引擎 Python 环境中使用自定义的环境变量
+AMZ_ACCESS_KEY = os.environ.get('AMZ_ACCESS_KEY')
+AMZ_SECRET_KEY = os.environ.get('AMZ_SECRET_KEY')
+AMZ_ASSOC_TAG = os.environ.get('AMZ_ASSOC_TAG')
+AMZ_COOKIE = os.environ.get('AMZ_COOKIE')
+LC_APP_ID = os.environ.get('LEANCLOUD_APP_ID')
+LC_APP_KEY = os.environ.get('LEANCLOUD_APP_KEY')
+LC_USERNAME = os.environ.get('LC_USERNAME')
+LC_PASSWORD = os.environ.get('LC_PASSWORD')
 
 # Leancloud
 # 初始化 Leancloud 应用。

@@ -271,7 +271,7 @@ def async_parse_new(app, url, request):
         # flash('Parsing item...')
         item = update_item(url)
         with app.test_request_context():
-            flash('Ok! Parsed item: {}'.format(item.get('spu').get('name')))
+            flash('Ok! Parsed item: {}'.format(item.spu.get('name')))
 
 
 def parse_new(url):
