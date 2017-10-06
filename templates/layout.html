@@ -16,9 +16,13 @@
 <body>
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 <div class="container-fluid">
-  <div class="m-sm-0">
+    {% for message in get_flashed_messages() %}
+      <div class="alert alert-warning">
+          <button type="button" data-dismiss="alert" class="close">&times;</button>
+          {{ message }}
+      </div>
+    {% endfor %}
     {% block content %}{% endblock %}
-  </div>
 </div>
 {% block footer %}
     <center class="mt-2 mb-2">&copy; Copyright 2017 By <a href="https://ryannanna.taobao.com">Ryan&Anna</a>.</center>

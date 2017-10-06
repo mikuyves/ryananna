@@ -247,6 +247,18 @@ def product(asin):
     return json.dumps({'spu': spu, 'skus': skus})
 
 
+@app.route('/delete/<asin>')
+def delete_item(asin):
+    '''asin:: Must be spu asin.'''
+    spu = Spu.query.equal_to('asin', asin).first()
+    spu_name = spu.get('name')
+    skus = Sku.query.equal_to('spu', spu).find()
+    objs = [spu] + skus
+    leancloud.Object.destroy_all(objs)
+    flash('{0} has been deleted.'.format(spu_name))
+    return redirect(url_for('index'), 301)
+
+
 @sockets.route('/echo')
 def echo_socket(ws):
     while True:

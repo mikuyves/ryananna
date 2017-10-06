@@ -24,7 +24,9 @@
           <div class="col col-6 col-sm-4 col-md-4 col-lg-3 col-xl-2 mb-0 mb-sm-1 mb-lg-2 no-gutters">
 
             <div class="card mdui-card mdui-hoverable">
-              <img class="card-img-top" src="{{ get_img_url(item.spu) }}">
+              <a href="{{ url_for('spu', asin=item.spu.asin) }}">
+                <img class="card-img-top" src="{{ get_img_url(item.spu) }}">
+              </a>
               <div class="card-body">
                 <h4 class="brand card-title">{{ item.spu.brand }}</h4>
                 <p class="title card-text">{{ item.spu.name }}</p>
@@ -66,8 +68,10 @@
                   <p class="card-text">
                     <small class="refresh_time text-muted">{{ item.refresh_time }}</small>
                   </p>
-                  <a href="{{ url_for('index', comic_id=item.id) }}"
+                  <a href="{{ url_for('spu', asin=item.spu.asin) }}"
                      class="btn btn-primary btn-sm">View</a>
+                  <a href="{{ url_for('delete_item', asin=item.spu.asin) }}"
+                     class="btn btn-warning btn-sm">Delete</a>
                 </footer>
 
               </div>
