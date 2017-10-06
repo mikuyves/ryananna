@@ -253,6 +253,7 @@ def delete_item(asin):
     spu = Spu.query.equal_to('asin', asin).first()
     spu_name = spu.get('name')
     skus = Sku.query.equal_to('spu', spu).find()
+    # history_list = History.query.equal_to('sku', sku).find()
     objs = [spu] + skus
     leancloud.Object.destroy_all(objs)
     flash('{0} has been deleted.'.format(spu_name))
