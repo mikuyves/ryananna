@@ -1,16 +1,21 @@
 # coding: utf-8
+import os
 
 import leancloud
 from leancloud import Engine
 from leancloud import LeanEngineError
 import json
 import search
-from secret import LC_USERNAME, LC_PASSWORD
+
 
 engine = Engine()
 
+
+LC_USERNAME = os.environ.get('LC_USERNAME')
+LC_PASSWORD = os.environ.get('LC_PASSWORD')
 user = leancloud.User()
 user.login(LC_USERNAME, LC_PASSWORD)
+
 
 @engine.define
 def hello(**params):
