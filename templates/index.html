@@ -71,7 +71,7 @@
                   <a href="{{ url_for('spu', asin=item.spu.asin) }}"
                      class="btn btn-primary btn-sm">View</a>
                   <a href="{{ url_for('delete_item', asin=item.spu.asin) }}"
-                     class="btn btn-warning btn-sm">Delete</a>
+                     id="delete" class="btn btn-warning btn-sm">Delete</a>
                 </footer>
 
               </div>
@@ -107,6 +107,13 @@
 
       $('.row').imagesLoaded().progress(function () {
           $('.row').masonry();
+      });
+  </script>
+  <script>
+      $(document).on("click", "#delete", function(e) {
+          bootbox.alert("Do you really want to delete this item?", function() {
+              console.log("Item is deleted.");
+          });
       });
   </script>
 {% endblock %}
