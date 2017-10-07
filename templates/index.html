@@ -31,11 +31,11 @@
                 <h4 class="brand card-title">{{ item.spu.brand }}</h4>
                 <p class="title card-text">{{ item.spu.name }}</p>
                 <p class="description card-text">
-                  <small class="text-muted"><em>¥{{ item.spu.min_price }} - ¥{{ item.spu.max_price }}</em></small>
+                  <em>¥{{ item.spu.min_price }} - {{ item.spu.max_price }}</em>
                 </p>
 
                 {% for sku in item.skus %}
-                  <p class="card-text">
+                  <p class="card-text {% if loop.index > 3 %}collapse muti-collapse {{ item.spu.asin }}{% endif %}">
                     <img class="rounded" style="width: 20px; height: auto;" src="{{ sku.s_pic }}" alt="{{ sku.name }}">
                     <a href="{{ url_for('sku', asin=sku.asin) }}" class="">
                       <span class="card-text">{{ sku.name }} : ¥{{ sku.price }}</span>
@@ -68,10 +68,13 @@
                   <p class="card-text">
                     <small class="refresh_time text-muted">{{ item.refresh_time }}</small>
                   </p>
-                  <a href="{{ url_for('spu', asin=item.spu.asin) }}"
-                     class="btn btn-primary btn-sm">View</a>
+{#                  <a href="{{ url_for('spu', asin=item.spu.asin) }}"#}
+{#                     class="btn btn-primary btn-sm">View</a>#}
+                  {% if item.skus|length > 3 %}
+                    <button id="{{ item.spu.asin }}" class="btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target=".{{ item.spu.asin }}" aria-expanded="false">More</button>
+                  {% endif %}
                   <a href="{{ url_for('delete_item', asin=item.spu.asin) }}"
-                     id="delete" class="btn btn-warning btn-sm">Delete</a>
+                     id="delete" class="btn btn-danger btn-sm">Delete</a>
                 </footer>
 
               </div>
@@ -115,5 +118,19 @@
               console.log("Item is deleted.");
           });
       });
+  </script>
+  <script>
+    $('button').click(function () {
+        $(this).text(function (i, old) {
+            return old == "More" ? "Less" : "More"
+        })
+        $(this).toggleClass("btn-warning")
+    });
+    $('.collapse').on('shown.bs.collapse', function () {
+        $('.row').masonry();
+    });
+    $('.collapse').on('hidden.bs.collapse', function () {
+        $('.row').masonry();
+    });
   </script>
 {% endblock %}
