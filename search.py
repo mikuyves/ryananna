@@ -28,6 +28,11 @@ LC_APP_KEY = os.environ.get('LEANCLOUD_APP_KEY')
 LC_USERNAME = os.environ.get('LC_USERNAME')
 LC_PASSWORD = os.environ.get('LC_PASSWORD')
 
+import platform
+if platform.system() == 'Windows':
+    from secret import LC_APP_ID, LC_APP_KEY, LC_USERNAME, LC_PASSWORD
+
+
 # Leancloud
 # 初始化 Leancloud 应用。
 leancloud.init(LC_APP_ID, LC_APP_KEY)
@@ -508,11 +513,43 @@ class AmzProduct(object):
         leancloud.Object.save_all(skus)
 
 
+# 更新单品。配合云函数定时任务使用。
 def update_item(url=None, **kwargs):
     if not url:
         spu = Spu.query.add_ascending('updatedAt').first()
         url = spu.get('url')
     return AmzProduct(url)
+
+
+# 删除多个 asin 无用历史记录。配合云函数定时任务使用。
+def clear_useless_history():
+    skus = Sku.query.add_ascending('updatedAt').limit(1000).find()
+    asin_list = [sku.get('asin') for sku in skus]
+    for asin in asin_list:
+        delete_useless_history(asin)
+
+
+# 删除一个 asin 的无用历史记录。配合云函数定时任务使用。
+def delete_useless_history(asin):
+    history_list = History.query\
+        .equal_to('asin', asin)\
+        .add_ascending('createdAt')\
+        .find()
+    pre_index = 0
+    index = 1
+    useless_list = []
+    while index < len(history_list):
+        pre_history = history_list[pre_index]
+        history = history_list[index]
+        if pre_history.get('price') == history.get('price') \
+            and pre_history.get('is_instock') == history.get('is_instock') \
+            and pre_history.get('is_prime') == history.get('is_prime'):
+            useless_list.append(history)
+            print('Delete 1 line of history of %s' % asin)
+        pre_index += 1
+        index += 1
+    print('===> Clear history of %s' % asin)
+    leancloud.Object.destroy_all(useless_list)
 
 
 def print_products(products):
