@@ -17,9 +17,17 @@
 <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
 <div class="container-fluid">
     {% for message in get_flashed_messages() %}
+{#      删除单品通知, 用 flash 实现。 #}
       <div class="alert alert-warning">
           <button type="button" data-dismiss="alert" class="close">&times;</button>
           {{ message }}
+      </div>
+{#      更新单品通知，用 bootstrap 实现。 #}
+      <div id="update" class="alert alert-warning alert-dismissible fade show" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        Item is updated.
       </div>
     {% endfor %}
     {% block content %}{% endblock %}

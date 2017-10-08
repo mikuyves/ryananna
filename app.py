@@ -279,3 +279,17 @@ def parse_new(url):
     thr = Thread(target=async_parse_new, args=[app, url, request])
     thr.start()
     return thr
+
+
+@app.route('/update')
+def update():
+    asin = request.args.get('asin')
+    spu = Spu.query.equal_to('asin', asin).first()
+    return update_item(spu.get('url'))
+
+
+@app.route('/test')
+def test():
+    asin = request.args.get('asin')
+    spu = Spu.query.equal_to('asin', asin).first()
+    return json.dumps({'asin': 'asin'})
