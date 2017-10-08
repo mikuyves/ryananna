@@ -23,7 +23,7 @@
 {#          mb-num 是底部 margin#}
           <div class="col col-6 col-sm-4 col-md-4 col-lg-3 col-xl-2 mb-0 mb-sm-1 mb-lg-2 no-gutters">
 
-            <div class="card mdui-card mdui-hoverable">
+            <div id="{{ item.spu.asin }}" class="card mdui-card mdui-hoverable">
               <a href="{{ url_for('spu', asin=item.spu.asin) }}">
                 <img class="card-img-top" src="{{ get_img_url(item.spu) }}">
               </a>
@@ -74,6 +74,7 @@
                     <button id="{{ item.spu.asin }}" class="more-or-less btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target=".{{ item.spu.asin }}" aria-expanded="false">More</button>
                   {% endif %}
 
+                  <button id="{{ item.spu.asin }}" class="update btn btn-info btn-sm">Update</button>
                   <!-- Button trigger modal -->
                   <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal">
                     Delete
@@ -142,7 +143,7 @@
     $('button.more-or-less').click(function () {
         $(this).text(function (i, old) {
             return old == "More" ? "Less" : "More"
-        })
+        });
         $(this).toggleClass("btn-warning")
     });
     $('.collapse').on('shown.bs.collapse', function () {
@@ -151,5 +152,32 @@
     $('.collapse').on('hidden.bs.collapse', function () {
         $('.row').masonry();
     });
+  </script>
+  <script>
+    $('button.update').on('click', function () {
+        let asin = $(this)[0].id;
+        let sel = 'button#' + asin + '.update';
+        let button = $(sel);
+        button.text(function () {
+            return 'Updating'
+        });
+        button.toggleClass('btn-warning');
+        $.ajax({
+            url: '/update?asin=' + asin,
+            type: 'GET',
+            success: function (result) {
+                button.text(function () {
+                    return 'Updated'
+                });
+                button.toggleClass('btn-secondary');
+            },
+            fail: function () {
+                button.text(function () {
+                    return 'Fail'
+                });
+                button.toggleClass('btn-danger');
+            }
+        })
+    })
   </script>
 {% endblock %}

@@ -518,7 +518,8 @@ def update_item(url=None, **kwargs):
     if not url:
         spu = Spu.query.add_ascending('updatedAt').first()
         url = spu.get('url')
-    return AmzProduct(url)
+    item = AmzProduct(url)
+    return json.dumps({'spu': item.spu, 'sku_list': item.sku_list})
 
 
 # 删除多个 asin 无用历史记录。配合云函数定时任务使用。
