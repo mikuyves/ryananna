@@ -39,6 +39,11 @@ def update_item(**params):
     return search.update_item()
 
 
+@engine.define
+def clear_history(**params):
+    return search.clear_useless_history()
+
+
 @engine.before_save('Todo')
 def before_todo_save(todo):
     content = todo.get('content')

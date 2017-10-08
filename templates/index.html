@@ -23,7 +23,7 @@
 {#          mb-num 是底部 margin#}
           <div class="col col-6 col-sm-4 col-md-4 col-lg-3 col-xl-2 mb-0 mb-sm-1 mb-lg-2 no-gutters">
 
-            <div class="card mdui-card mdui-hoverable">
+            <div id="{{ item.spu.asin }}" class="card mdui-card mdui-hoverable">
               <a href="{{ url_for('spu', asin=item.spu.asin) }}">
                 <img class="card-img-top" src="{{ get_img_url(item.spu) }}">
               </a>
@@ -31,11 +31,11 @@
                 <h4 class="brand card-title">{{ item.spu.brand }}</h4>
                 <p class="title card-text">{{ item.spu.name }}</p>
                 <p class="description card-text">
-                  <small class="text-muted"><em>¥{{ item.spu.min_price }} - ¥{{ item.spu.max_price }}</em></small>
+                  <em>¥{{ item.spu.min_price }} - {{ item.spu.max_price }}</em>
                 </p>
 
                 {% for sku in item.skus %}
-                  <p class="card-text">
+                  <p class="card-text {% if loop.index > 3 %}collapse muti-collapse {{ item.spu.asin }}{% endif %}">
                     <img class="rounded" style="width: 20px; height: auto;" src="{{ sku.s_pic }}" alt="{{ sku.name }}">
                     <a href="{{ url_for('sku', asin=sku.asin) }}" class="">
                       <span class="card-text">{{ sku.name }} : ¥{{ sku.price }}</span>
@@ -68,10 +68,40 @@
                   <p class="card-text">
                     <small class="refresh_time text-muted">{{ item.refresh_time }}</small>
                   </p>
-                  <a href="{{ url_for('spu', asin=item.spu.asin) }}"
-                     class="btn btn-primary btn-sm">View</a>
-                  <a href="{{ url_for('delete_item', asin=item.spu.asin) }}"
-                     id="delete" class="btn btn-warning btn-sm">Delete</a>
+{#                  <a href="{{ url_for('spu', asin=item.spu.asin) }}"#}
+{#                     class="btn btn-primary btn-sm">View</a>#}
+                  {% if item.skus|length > 3 %}
+                    <button id="{{ item.spu.asin }}" class="more-or-less btn btn-primary btn-sm" type="button" data-toggle="collapse" data-target=".{{ item.spu.asin }}" aria-expanded="false">More</button>
+                  {% endif %}
+
+                  <button id="{{ item.spu.asin }}" class="update btn btn-info btn-sm">Update</button>
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#exampleModal">
+                    Delete
+                  </button>
+
+                  <!-- Modal -->
+                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Delete Item {{ item.spu.asin }}</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          Do you really want to delete {{ item.spu.name }}?
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                          <a href="{{ url_for('delete_item', asin=item.spu.asin) }}"
+                             id="delete" class="btn btn-danger">Delete</a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                 </footer>
 
               </div>
@@ -110,10 +140,44 @@
       });
   </script>
   <script>
-      $(document).on("click", "#delete", function(e) {
-          bootbox.alert("Do you really want to delete this item?", function() {
-              console.log("Item is deleted.");
-          });
-      });
+    $('button.more-or-less').click(function () {
+        $(this).text(function (i, old) {
+            return old == "More" ? "Less" : "More"
+        });
+        $(this).toggleClass("btn-warning")
+    });
+    $('.collapse').on('shown.bs.collapse', function () {
+        $('.row').masonry();
+    });
+    $('.collapse').on('hidden.bs.collapse', function () {
+        $('.row').masonry();
+    });
+  </script>
+  <script>
+    $('button.update').on('click', function () {
+        let asin = $(this)[0].id;
+        let sel = 'button#' + asin + '.update';
+        let button = $(sel);
+        button.text(function () {
+            return 'Updating'
+        });
+        button.toggleClass('btn-warning');
+        $.ajax({
+            url: '/update?asin=' + asin,
+            type: 'GET',
+            success: function (result) {
+                button.text(function () {
+                    return 'Updated'
+                });
+                button.toggleClass('btn-secondary');
+            },
+            fail: function () {
+                button.text(function () {
+                    return 'Fail'
+                });
+                button.toggleClass('btn-danger');
+            }
+        })
+    })
   </script>
 {% endblock %}

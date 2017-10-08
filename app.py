@@ -251,12 +251,12 @@ def product(asin):
 def delete_item(asin):
     '''asin:: Must be spu asin.'''
     spu = Spu.query.equal_to('asin', asin).first()
-    spu_name = spu.get('name')
-    skus = Sku.query.equal_to('spu', spu).find()
+    skus = Sku.query.equal_to('asin', asin).find()
+    history_list = History.query.equal_to('asin', asin).find()
     # history_list = History.query.equal_to('sku', sku).find()
-    objs = [spu] + skus
+    objs = [spu] + skus + history_list
     leancloud.Object.destroy_all(objs)
-    flash('{0} has been deleted.'.format(spu_name))
+    flash('{0} has been deleted.'.format(spu.get('name')))
     return redirect(url_for('index'), 301)
 
 
@@ -279,3 +279,17 @@ def parse_new(url):
     thr = Thread(target=async_parse_new, args=[app, url, request])
     thr.start()
     return thr
+
+
+@app.route('/update')
+def update():
+    asin = request.args.get('asin')
+    spu = Spu.query.equal_to('asin', asin).first()
+    return update_item(spu.get('url'))
+
+
+@app.route('/test')
+def test():
+    asin = request.args.get('asin')
+    spu = Spu.query.equal_to('asin', asin).first()
+    return json.dumps({'asin': 'asin'})

@@ -25,13 +25,19 @@
           {% endmacro %}
           {% for sku in skus %}
 
-            <div class="col col-xs-12 col-sm-6 col-md-4 col-lg-4 col-xl-3 mb-3">
+            <div class="col col-4 col-xs-4 col-sm-4 col-md-3 col-lg-3 col-xl-2 mb-3">
               <div class="card mdui-card mdui-hoverable">
                 <img class="card-img-top" src="{{ sku.l_pic }}">
                 <div class="card-body">
                   <h4 class="price card-title">¥{{ sku.price }}</h4>
                   <p class="name description card-text">
-                    {{ sku.name }}
+                    {{ sku.special_size }}
+                  </p>
+                  <p class="size description card-text text-success">
+                    <em>{{ sku.size }}</em>
+                  </p>
+                  <p class="color description card-text">
+                    {{ sku.color }}
                   </p>
 
                   <footer>
@@ -55,7 +61,7 @@
 {% block footer %} {{ super() }}
   <script>
       var options = {
-          valueNames: ['name'],
+          valueNames: ['size', 'color'],
           listClass: 'row'
       };
       var list = new List('items', options);
