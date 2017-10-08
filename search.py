@@ -553,6 +553,13 @@ def delete_useless_history(asin):
     leancloud.Object.destroy_all(useless_list)
 
 
+def delete_no_ref_history():
+    his_list = History.query.limit(1000).add_ascending('updatedAt').include('sku').find()
+    no_ref_his_list = [his for his in his_list if not his.get('sku')]
+    print(no_ref_his_list)
+    leancloud.Object.destroy_all(no_ref_his_list)
+
+
 def print_products(products):
     with open('result.txt', 'w') as f:
         for i, product in enumerate(products):
